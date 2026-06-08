@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web App</title>
+</head>
+<body>
+    <h1>Datos desde API</h1>
+    <ul>
+        {% for item in data %}
+            <li>{{ item.nombre }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

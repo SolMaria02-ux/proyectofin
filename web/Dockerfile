@@ -1,17 +1,17 @@
-
 FROM python:3.11
 
 WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
 RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     build-essential \
     pkg-config
 
-RUN pip install -r requirements.txt
+COPY requirements.txt .
+
+RUN pip config set global.timeout 120
+RUN pip config set global.retries 10
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 

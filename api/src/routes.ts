@@ -7,7 +7,14 @@ import {
   eliminarProducto,
   getProductosStockBajo,
 } from './producto';
-import { getCategorias, getVentasPorCategoria } from './categoria';
+import {
+  getCategorias,
+  getCategoriaPorId,
+  crearCategoria,
+  actualizarCategoria,
+  eliminarCategoria,
+  getVentasPorCategoria,
+} from './categoria';
 import {
   crearPedido,
   getPedidos,
@@ -16,6 +23,8 @@ import {
 } from './pedido';
 
 const router = Router();
+
+// ===== PRODUCTOS =====
 
 router.get('/productos', async (req, res) => {
   try {
@@ -74,6 +83,8 @@ router.delete('/productos/:id', async (req, res) => {
   }
 });
 
+// ===== CATEGORIAS =====
+
 router.get('/categorias', async (req, res) => {
   try {
     const categorias = await getCategorias();
@@ -91,6 +102,45 @@ router.get('/categorias/ventas', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener las ventas por categoría' });
   }
 });
+
+router.get('/categorias/:id', async (req, res) => {
+  try {
+    const categoria = await getCategoriaPorId(Number(req.params.id));
+    if (!categoria) return res.status(404).json({ error: 'Categoría no encontrada' });
+    res.json(categoria);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener la categoría' });
+  }
+});
+
+router.post('/categorias', async (req, res) => {
+  try {
+    const nuevaCategoria = await crearCategoria(req.body);
+    res.status(201).json(nuevaCategoria);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear la categoría' });
+  }
+});
+
+router.put('/categorias/:id', async (req, res) => {
+  try {
+    const actualizada = await actualizarCategoria(Number(req.params.id), req.body);
+    res.json(actualizada);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar la categoría' });
+  }
+});
+
+router.delete('/categorias/:id', async (req, res) => {
+  try {
+    const resultado = await eliminarCategoria(Number(req.params.id));
+    res.json(resultado);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar la categoría' });
+  }
+});
+
+// ===== PEDIDOS =====
 
 router.post('/pedidos', async (req, res) => {
   try {

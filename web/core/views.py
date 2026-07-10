@@ -90,3 +90,123 @@ def historial_pedidos(request):
     resp = requests.get(f'{API_URL}/pedidos')
     pedidos = resp.json()
     return render(request, 'historial_pedidos.html', {'pedidos': pedidos})
+
+
+# ===== CATEGORIAS (CRUD) =====
+
+def listar_categorias(request):
+    resp = requests.get(f'{API_URL}/categorias')
+    categorias = resp.json()
+    return render(request, 'categorias.html', {'categorias': categorias})
+
+
+def crear_categoria(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+        requests.post(f'{API_URL}/categorias', json={
+            'nombre': nombre,
+            'descripcion': descripcion,
+        })
+        return redirect('listar_categorias')
+
+    return render(request, 'categoria_form.html', {'categoria': None})
+
+
+def editar_categoria(request, categoria_id):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+        requests.put(f'{API_URL}/categorias/{categoria_id}', json={
+            'nombre': nombre,
+            'descripcion': descripcion,
+        })
+        return redirect('listar_categorias')
+
+    resp = requests.get(f'{API_URL}/categorias/{categoria_id}')
+    categoria = resp.json()
+    return render(request, 'categoria_form.html', {'categoria': categoria})
+
+
+def eliminar_categoria(request, categoria_id):
+    requests.delete(f'{API_URL}/categorias/{categoria_id}')
+    return redirect('listar_categorias')
+
+
+# ===== PRODUCTOS (CRUD) =====
+
+def listar_productos_admin(request):
+    resp = requests.get(f'{API_URL}/productos')
+    productos = resp.json()
+
+    categorias_resp = requests.get(f'{API_URL}/categorias')
+    categorias = categorias_resp.json()
+
+    # Mapear categoria_id -> nombre para mostrarlo en la tabla
+    categorias_por_id = {cat['id']: cat['nombre'] for cat in categorias}
+    for prod in productos:
+        prod['categoria_nombre'] = categorias_por_id.get(prod.get('categoria_id'), 'Sin categoría')
+
+    return render(request, 'productos_admin.html', {
+        'productos': productos,
+        'categorias': categorias,
+    })
+
+
+def crear_producto(request):
+    categorias_resp = requests.get(f'{API_URL}/categorias')
+    categorias = categorias_resp.json()
+
+    if request.method == 'POST':
+        data = {
+            'nombre': request.POST.get('nombre'),
+            'descripcion': request.POST.get('descripcion'),
+            'precio': request.POST.get('precio'),
+            'stock': request.POST.get('stock'),
+            'categoria_id': request.POST.get('categoria_id'),
+        }
+        requests.post(f'{API_URL}/productos', json=data)
+        return redirect('listar_productos_admin')
+
+    return render(request, 'producto_form.html', {'producto': None, 'categorias': categorias})
+
+
+def editar_producto(request, producto_id):
+    categorias_resp = requests.get(f'{API_URL}/categorias')
+    categorias = categorias_resp.json()
+
+    if request.method == 'POST':
+        data = {
+            'nombre': request.POST.get('nombre'),
+            'descripcion': request.POST.get('descripcion'),
+            'precio': request.POST.get('precio'),
+            'stock': request.POST.get('stock'),
+            'categoria_id': request.POST.get('categoria_id'),
+        }
+        requests.put(f'{API_URL}/productos/{producto_id}', json=data)
+        return redirect('listar_productos_admin')
+
+    resp = requests.get(f'{API_URL}/productos/{producto_id}')
+    producto = resp.json()
+    return render(request, 'producto_form.html', {'producto': producto, 'categorias': categorias})
+
+
+def eliminar_producto(request, producto_id):
+    requests.delete(f'{API_URL}/productos/{producto_id}')
+    return redirect('listar_productos_admin')
+# ===== CONSULTAS DE NEGOCIO =====
+ 
+def productos_stock_bajo(request):
+    limite = request.GET.get('limite', 5)
+    resp = requests.get(f'{API_URL}/productos/bajo-stock', params={'limite': limite})
+    productos = resp.json()
+    return render(request, 'stock_bajo.html', {
+        'productos': productos,
+        'limite': limite,
+    })
+ 
+ 
+def ventas_por_categoria(request):
+    resp = requests.get(f'{API_URL}/categorias/ventas')
+    ventas = resp.json()
+    return render(request, 'ventas_categoria.html', {'ventas': ventas})

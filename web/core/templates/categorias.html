@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Categorías</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
+        a.boton { background: #2a5db0; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; }
+        a.eliminar { background: #b02a2a; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; margin-left: 6px; }
+        a.nueva { display: inline-block; margin-top: 16px; background: #2a7a2a; color: white; padding: 8px 14px; border-radius: 4px; text-decoration: none; }
+        nav a { margin-right: 16px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'catalogo' %}">Catálogo</a>
+        <a href="{% url 'ver_carrito' %}">Carrito</a>
+        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
+        <a href="{% url 'listar_categorias' %}">Categorías</a>
+    </nav>
+
+    <h1>Categorías</h1>
+
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th></th>
+        </tr>
+        {% for cat in categorias %}
+            <tr>
+                <td>{{ cat.nombre }}</td>
+                <td>{{ cat.descripcion }}</td>
+                <td>
+                    <a class="boton" href="{% url 'editar_categoria' cat.id %}">Editar</a>
+                    <a class="eliminar" href="{% url 'eliminar_categoria' cat.id %}" onclick="return confirm('¿Seguro que quieres eliminar esta categoría?');">Eliminar</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <a class="nueva" href="{% url 'crear_categoria' %}">+ Nueva categoría</a>
+</body>
+</html>

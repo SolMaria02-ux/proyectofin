@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if categoria %}Editar{% else %}Nueva{% endif %} Categoría</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 30px auto; padding: 0 20px; }
+        label { display: block; margin-top: 12px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; }
+        button { margin-top: 16px; background: #2a5db0; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; }
+        nav a { margin-right: 16px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'catalogo' %}">Catálogo</a>
+        <a href="{% url 'ver_carrito' %}">Carrito</a>
+        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
+        <a href="{% url 'listar_categorias' %}">Categorías</a>
+    </nav>
+
+    <h1>{% if categoria %}Editar Categoría{% else %}Nueva Categoría{% endif %}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ categoria.nombre|default:'' }}" required>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" rows="3">{{ categoria.descripcion|default:'' }}</textarea>
+
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>

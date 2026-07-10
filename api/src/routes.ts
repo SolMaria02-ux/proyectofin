@@ -1,39 +1,52 @@
 import { Router } from 'express';
 import {
-  getCatalogo,
+  getProductos,
   getProductoPorId,
   crearProducto,
   actualizarProducto,
   eliminarProducto,
-} from './catalogo';
+  getProductosStockBajo,
+} from './producto';
+import { getCategorias, getVentasPorCategoria } from './categoria';
+import {
+  crearPedido,
+  getPedidos,
+  getPedidoPorId,
+  actualizarEstadoPedido,
+} from './pedido';
 
 const router = Router();
 
-// GET /api/catalogo - obtener todos los productos
-router.get('/catalogo', async (req, res) => {
+router.get('/productos', async (req, res) => {
   try {
-    const productos = await getCatalogo();
+    const productos = await getProductos();
     res.json(productos);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener el catálogo' });
+    res.status(500).json({ error: 'Error al obtener los productos' });
   }
 });
 
-// GET /api/catalogo/:id - obtener un producto por id
-router.get('/catalogo/:id', async (req, res) => {
+router.get('/productos/bajo-stock', async (req, res) => {
+  try {
+    const limite = Number(req.query.limite) || 5;
+    const productos = await getProductosStockBajo(limite);
+    res.json(productos);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener productos con stock bajo' });
+  }
+});
+
+router.get('/productos/:id', async (req, res) => {
   try {
     const producto = await getProductoPorId(Number(req.params.id));
-    if (!producto) {
-      return res.status(404).json({ error: 'Producto no encontrado' });
-    }
+    if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
     res.json(producto);
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener el producto' });
   }
 });
 
-// POST /api/catalogo - crear un nuevo producto
-router.post('/catalogo', async (req, res) => {
+router.post('/productos', async (req, res) => {
   try {
     const nuevoProducto = await crearProducto(req.body);
     res.status(201).json(nuevoProducto);
@@ -42,23 +55,77 @@ router.post('/catalogo', async (req, res) => {
   }
 });
 
-// PUT /api/catalogo/:id - actualizar un producto
-router.put('/catalogo/:id', async (req, res) => {
+router.put('/productos/:id', async (req, res) => {
   try {
-    const productoActualizado = await actualizarProducto(Number(req.params.id), req.body);
-    res.json(productoActualizado);
+    const actualizado = await actualizarProducto(Number(req.params.id), req.body);
+    if (!actualizado) return res.status(404).json({ error: 'Producto no encontrado' });
+    res.json(actualizado);
   } catch (error) {
     res.status(500).json({ error: 'Error al actualizar el producto' });
   }
 });
 
-// DELETE /api/catalogo/:id - eliminar un producto
-router.delete('/catalogo/:id', async (req, res) => {
+router.delete('/productos/:id', async (req, res) => {
   try {
     const resultado = await eliminarProducto(Number(req.params.id));
     res.json(resultado);
   } catch (error) {
     res.status(500).json({ error: 'Error al eliminar el producto' });
+  }
+});
+
+router.get('/categorias', async (req, res) => {
+  try {
+    const categorias = await getCategorias();
+    res.json(categorias);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener las categorías' });
+  }
+});
+
+router.get('/categorias/ventas', async (req, res) => {
+  try {
+    const ventas = await getVentasPorCategoria();
+    res.json(ventas);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener las ventas por categoría' });
+  }
+});
+
+router.post('/pedidos', async (req, res) => {
+  try {
+    const pedido = await crearPedido(req.body);
+    res.status(201).json(pedido);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message || 'Error al crear el pedido' });
+  }
+});
+
+router.get('/pedidos', async (req, res) => {
+  try {
+    const pedidos = await getPedidos();
+    res.json(pedidos);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener los pedidos' });
+  }
+});
+
+router.get('/pedidos/:id', async (req, res) => {
+  try {
+    const pedido = await getPedidoPorId(Number(req.params.id));
+    if (!pedido) return res.status(404).json({ error: 'Pedido no encontrado' });
+    res.json(pedido);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener el pedido' });
+  }
+});
+
+router.put('/pedidos/:id', async (req, res) => {
+  try {
+    const resultado = await actualizarEstadoPedido(Number(req.params.id), req.body.estado);
+    res.json(resultado);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar el pedido' });
   }
 });
 

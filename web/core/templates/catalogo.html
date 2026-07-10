@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Productos</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        h1 { color: #222; }
+        .filtros { margin-bottom: 20px; }
+        select { padding: 6px; font-size: 14px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+        .card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; }
+        .card h3 { margin: 0 0 8px; }
+        .precio { font-weight: bold; color: #2a7a2a; }
+        .stock { color: #666; font-size: 13px; }
+        button { background: #2a5db0; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-top: 8px; }
+        nav a { margin-right: 16px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'catalogo' %}">Catálogo</a>
+        <a href="{% url 'ver_carrito' %}">Carrito</a>
+        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
+    </nav>
+
+    <h1>Catálogo de Productos</h1>
+
+    <form method="get" class="filtros">
+        <label for="categoria">Filtrar por categoría:</label>
+        <select name="categoria" id="categoria" onchange="this.form.submit()">
+            <option value="">Todas</option>
+            {% for cat in categorias %}
+                <option value="{{ cat.id }}" {% if categoria_seleccionada == cat.id|stringformat:"s" %}selected{% endif %}>
+                    {{ cat.nombre }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <div class="grid">
+        {% for producto in productos %}
+            <div class="card">
+                <h3>{{ producto.nombre }}</h3>
+                <p>{{ producto.descripcion }}</p>
+                <p class="precio">${{ producto.precio }}</p>
+                <p class="stock">Stock disponible: {{ producto.stock }}</p>
+                <form method="post" action="{% url 'agregar_al_carrito' producto.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Agregar al carrito</button>
+                </form>
+            </div>
+        {% empty %}
+            <p>No hay productos disponibles en esta categoría.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

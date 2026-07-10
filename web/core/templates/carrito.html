@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tu Carrito</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
+        .total { font-size: 20px; font-weight: bold; margin-top: 16px; text-align: right; }
+        button { background: #2a7a2a; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; }
+        .quitar { color: #b02a2a; text-decoration: none; font-size: 13px; }
+        .error { background: #ffe0e0; color: #a02020; padding: 10px; border-radius: 6px; margin-bottom: 12px; }
+        nav a { margin-right: 16px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'catalogo' %}">Catálogo</a>
+        <a href="{% url 'ver_carrito' %}">Carrito</a>
+        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
+    </nav>
+
+    <h1>Tu Carrito</h1>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if items %}
+        <table>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio unitario</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.producto.nombre }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>${{ item.producto.precio }}</td>
+                    <td>${{ item.subtotal }}</td>
+                    <td><a class="quitar" href="{% url 'quitar_del_carrito' item.producto.id %}">Quitar</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <p class="total">Total: ${{ total }}</p>
+
+        <form method="post" action="{% url 'confirmar_pedido' %}">
+            {% csrf_token %}
+            <button type="submit">Confirmar pedido</button>
+        </form>
+    {% else %}
+        <p>Tu carrito está vacío. <a href="{% url 'catalogo' %}">Ir al catálogo</a></p>
+    {% endif %}
+</body>
+</html>

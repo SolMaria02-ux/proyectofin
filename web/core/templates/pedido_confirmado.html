@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedido Confirmado</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 20px; }
+        .exito { background: #e0ffe0; color: #206020; padding: 16px; border-radius: 6px; }
+        nav a { margin-right: 16px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'catalogo' %}">Catálogo</a>
+        <a href="{% url 'ver_carrito' %}">Carrito</a>
+        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
+    </nav>
+
+    <div class="exito">
+        <h2>¡Pedido confirmado!</h2>
+        <p>Número de pedido: #{{ pedido.id }}</p>
+        <p>Total: ${{ pedido.total }}</p>
+        <p>Estado: {{ pedido.estado }}</p>
+    </div>
+
+    <p><a href="{% url 'historial_pedidos' %}">Ver historial de pedidos</a></p>
+</body>
+</html>

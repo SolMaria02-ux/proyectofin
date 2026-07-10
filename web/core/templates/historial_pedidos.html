@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Pedidos</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
+        .estado { padding: 4px 10px; border-radius: 12px; font-size: 13px; }
+        .pendiente { background: #fff3cd; color: #856404; }
+        .completado { background: #d4edda; color: #155724; }
+        .cancelado { background: #f8d7da; color: #721c24; }
+        nav a { margin-right: 16px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'catalogo' %}">Catálogo</a>
+        <a href="{% url 'ver_carrito' %}">Carrito</a>
+        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
+    </nav>
+
+    <h1>Historial de Pedidos</h1>
+
+    {% if pedidos %}
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Estado</th>
+            </tr>
+            {% for pedido in pedidos %}
+                <tr>
+                    <td>{{ pedido.id }}</td>
+                    <td>{{ pedido.fecha }}</td>
+                    <td>${{ pedido.total }}</td>
+                    <td><span class="estado {{ pedido.estado }}">{{ pedido.estado }}</span></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Todavía no hay pedidos registrados.</p>
+    {% endif %}
+</body>
+</html>

@@ -210,3 +210,29 @@ def ventas_por_categoria(request):
     resp = requests.get(f'{API_URL}/categorias/ventas')
     ventas = resp.json()
     return render(request, 'ventas_categoria.html', {'ventas': ventas})
+    
+    # ===== PEDIDO — DETALLE Y CAMBIO DE ESTADO =====
+
+def detalle_pedido(request, pedido_id):
+    resp = requests.get(f'{API_URL}/pedidos/{pedido_id}')
+    if resp.status_code != 200:
+        return redirect('historial_pedidos')
+    pedido = resp.json()
+
+    # Calcular subtotal de cada item y agregar nombre del producto
+    for item in pedido.get('items', []):
+        item['subtotal'] = float(item['cantidad']) * float(item['precio_unitario'])
+        prod_resp = requests.get(f'{API_URL}/productos/{item["producto_id"]}')
+        if prod_resp.status_code == 200:
+            item['producto_nombre'] = prod_resp.json().get('nombre', 'Producto')
+        else:
+            item['producto_nombre'] = f'Producto #{item["producto_id"]}'
+
+    return render(request, 'pedido_detalle.html', {'pedido': pedido})
+
+
+def cambiar_estado_pedido(request, pedido_id):
+    if request.method == 'POST':
+        nuevo_estado = request.POST.get('estado')
+        requests.put(f'{API_URL}/pedidos/{pedido_id}', json={'estado': nuevo_estado})
+    return redirect('historial_pedidos')

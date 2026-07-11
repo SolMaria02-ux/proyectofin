@@ -1,28 +1,33 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Pedido Confirmado</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 20px; }
-        .exito { background: #e0ffe0; color: #206020; padding: 16px; border-radius: 6px; }
-        nav a { margin-right: 16px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pedido Confirmado — Tienda en Línea</title>
+    <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'catalogo' %}">Catálogo</a>
-        <a href="{% url 'ver_carrito' %}">Carrito</a>
-        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
+    <nav class="tienda-nav">
+        <div class="contenedor">
+            <span class="marca">Tienda en Línea</span>
+            <a href="{% url 'catalogo' %}">Catálogo</a>
+            <a href="{% url 'ver_carrito' %}">Carrito</a>
+            <a href="{% url 'historial_pedidos' %}">Pedidos</a>
+            <a href="{% url 'listar_categorias' %}">Categorías</a>
+            <a href="{% url 'listar_productos_admin' %}">Productos</a>
+        </div>
     </nav>
 
-    <div class="exito">
-        <h2>¡Pedido confirmado!</h2>
-        <p>Número de pedido: #{{ pedido.id }}</p>
-        <p>Total: ${{ pedido.total }}</p>
-        <p>Estado: {{ pedido.estado }}</p>
+    <div class="contenedor">
+        <div class="estado-vacio">
+            <div class="icono">✅</div>
+            <h1>¡Pedido confirmado!</h1>
+            <p>Tu pedido <strong>#{{ pedido.id }}</strong> se registró correctamente.</p>
+            <p class="total-final">Total: ${{ pedido.total }}</p>
+            <a class="btn btn-primary" href="{% url 'historial_pedidos' %}">Ver historial de pedidos</a>
+            <a class="btn btn-fantasma" href="{% url 'catalogo' %}">Seguir comprando</a>
+        </div>
     </div>
-
-    <p><a href="{% url 'historial_pedidos' %}">Ver historial de pedidos</a></p>
 </body>
 </html>

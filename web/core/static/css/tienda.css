@@ -1,0 +1,321 @@
+/* ============================================
+   TIENDA EN LÍNEA — Sistema de diseño
+   Paleta: verde bosque + mostaza (etiqueta de precio) sobre papel cálido
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #faf6ee;
+  --surface: #ffffff;
+  --ink: #21301f;
+  --ink-soft: #5b6b57;
+  --primary: #2f5233;
+  --primary-dark: #1e3a21;
+  --accent: #c9820a;
+  --accent-soft: #f6e3bf;
+  --danger: #b3261e;
+  --danger-soft: #f8d7d4;
+  --success: #2f6f4e;
+  --success-soft: #d9ecdf;
+  --pending: #a3690a;
+  --pending-soft: #f5e6c8;
+  --border: #e4dcc9;
+  --radius: 10px;
+  --shadow: 0 2px 10px rgba(33, 48, 31, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: 2rem; margin: 0 0 4px; }
+
+.contenedor {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+
+/* ===== Barra de navegación (mostrador de tienda) ===== */
+.tienda-nav {
+  background: var(--primary);
+  border-bottom: 3px solid var(--accent);
+}
+
+.tienda-nav .contenedor {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.tienda-nav .marca {
+  font-family: 'Fraunces', Georgia, serif;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-right: 20px;
+  white-space: nowrap;
+}
+
+.tienda-nav .marca::before {
+  content: "🏷️ ";
+}
+
+.tienda-nav a {
+  color: #f1ead9;
+  text-decoration: none;
+  font-size: 0.92rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.tienda-nav a:hover,
+.tienda-nav a:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+/* ===== Encabezado de página ===== */
+.encabezado-pagina {
+  padding: 32px 0 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+
+.encabezado-pagina p {
+  color: var(--ink-soft);
+  margin: 4px 0 0;
+}
+
+/* ===== Botones ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover { transform: translateY(-1px); }
+
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); }
+
+.btn-acento { background: var(--accent); color: #2b1c02; }
+.btn-acento:hover { box-shadow: 0 4px 12px rgba(201, 130, 10, 0.35); }
+
+.btn-peligro { background: var(--danger); color: #fff; }
+.btn-peligro:hover { box-shadow: 0 4px 12px rgba(179, 38, 30, 0.3); }
+
+.btn-fantasma {
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+}
+.btn-fantasma:hover { background: var(--primary); color: #fff; }
+
+.btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+
+/* ===== Tarjetas de producto (con esquina tipo etiqueta) ===== */
+.rejilla-productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+.tarjeta-producto {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.tarjeta-producto::before {
+  content: "";
+  position: absolute;
+  top: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 42px 42px 0;
+  border-color: transparent var(--accent-soft) transparent transparent;
+}
+
+.tarjeta-producto h3 {
+  font-size: 1.05rem;
+  margin: 0 0 6px;
+  padding-right: 20px;
+}
+
+.tarjeta-producto .desc {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  margin-bottom: 12px;
+  min-height: 40px;
+}
+
+.precio-etiqueta {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--primary-dark);
+}
+
+.stock-info {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 6px 0 14px;
+}
+
+.stock-info.bajo { color: var(--danger); font-weight: 600; }
+
+/* ===== Filtro de categoría ===== */
+.filtro-barra {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.filtro-barra label { font-weight: 600; font-size: 0.9rem; }
+
+select, input[type="text"], input[type="number"], textarea {
+  font-family: 'Inter', sans-serif;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 9px 12px;
+  font-size: 0.9rem;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+select:focus, input:focus, textarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+/* ===== Tablas estilo "libro de inventario" ===== */
+table.libro {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+table.libro th {
+  background: var(--primary);
+  color: #fff;
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+table.libro td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.92rem;
+}
+
+table.libro tr:nth-child(even) td { background: #fbf8f1; }
+table.libro tr:hover td { background: var(--accent-soft); }
+
+.monto { font-family: 'Fraunces', serif; font-weight: 600; }
+
+/* ===== Insignias de estado ===== */
+.insignia {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.insignia.pendiente { background: var(--pending-soft); color: var(--pending); }
+.insignia.completado { background: var(--success-soft); color: var(--success); }
+.insignia.cancelado { background: var(--danger-soft); color: var(--danger); }
+
+/* ===== Formularios ===== */
+.formulario-tarjeta {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  max-width: 480px;
+}
+
+.formulario-tarjeta label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-top: 14px;
+  margin-bottom: 4px;
+}
+
+.formulario-tarjeta input,
+.formulario-tarjeta select,
+.formulario-tarjeta textarea {
+  width: 100%;
+}
+
+.formulario-tarjeta .btn { margin-top: 20px; }
+
+/* ===== Estado vacío ===== */
+.estado-vacio {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--ink-soft);
+}
+
+.estado-vacio .icono { font-size: 2.2rem; margin-bottom: 8px; }
+
+/* ===== Utilidades ===== */
+.acciones-fila { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.total-final {
+  font-family: 'Fraunces', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: right;
+  margin-top: 16px;
+  color: var(--primary-dark);
+}
+
+@media (max-width: 640px) {
+  .tienda-nav .contenedor { flex-direction: column; align-items: flex-start; }
+  table.libro { display: block; overflow-x: auto; }
+}

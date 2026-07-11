@@ -1,46 +1,60 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Categorías</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
-        a.boton { background: #2a5db0; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; }
-        a.eliminar { background: #b02a2a; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; margin-left: 6px; }
-        a.nueva { display: inline-block; margin-top: 16px; background: #2a7a2a; color: white; padding: 8px 14px; border-radius: 4px; text-decoration: none; }
-        nav a { margin-right: 16px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Categorías — Tienda en Línea</title>
+    <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'catalogo' %}">Catálogo</a>
-        <a href="{% url 'ver_carrito' %}">Carrito</a>
-        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
-        <a href="{% url 'listar_categorias' %}">Categorías</a>
+    <nav class="tienda-nav">
+        <div class="contenedor">
+            <span class="marca">Tienda en Línea</span>
+            <a href="{% url 'catalogo' %}">Catálogo</a>
+            <a href="{% url 'ver_carrito' %}">Carrito</a>
+            <a href="{% url 'historial_pedidos' %}">Pedidos</a>
+            <a href="{% url 'listar_categorias' %}">Categorías</a>
+            <a href="{% url 'listar_productos_admin' %}">Productos</a>
+            <a href="{% url 'productos_stock_bajo' %}">Stock bajo</a>
+            <a href="{% url 'ventas_por_categoria' %}">Ventas</a>
+        </div>
     </nav>
 
-    <h1>Categorías</h1>
+    <div class="contenedor">
+        <div class="encabezado-pagina">
+            <h1>Categorías</h1>
+            <p>Organiza tu catálogo por tipo de producto.</p>
+        </div>
 
-    <table>
-        <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th></th>
-        </tr>
-        {% for cat in categorias %}
+        {% if categorias %}
+        <table class="libro">
             <tr>
-                <td>{{ cat.nombre }}</td>
-                <td>{{ cat.descripcion }}</td>
-                <td>
-                    <a class="boton" href="{% url 'editar_categoria' cat.id %}">Editar</a>
-                    <a class="eliminar" href="{% url 'eliminar_categoria' cat.id %}" onclick="return confirm('¿Seguro que quieres eliminar esta categoría?');">Eliminar</a>
-                </td>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th></th>
             </tr>
-        {% endfor %}
-    </table>
+            {% for cat in categorias %}
+                <tr>
+                    <td>{{ cat.nombre }}</td>
+                    <td>{{ cat.descripcion }}</td>
+                    <td class="acciones-fila">
+                        <a class="btn btn-fantasma btn-sm" href="{% url 'editar_categoria' cat.id %}">Editar</a>
+                        <a class="btn btn-peligro btn-sm" href="{% url 'eliminar_categoria' cat.id %}" onclick="return confirm('¿Seguro que quieres eliminar esta categoría?');">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <div class="estado-vacio">
+                <div class="icono">🏷️</div>
+                <p>Todavía no hay categorías registradas.</p>
+            </div>
+        {% endif %}
 
-    <a class="nueva" href="{% url 'crear_categoria' %}">+ Nueva categoría</a>
+        <p style="margin-top: 20px;">
+            <a class="btn btn-acento" href="{% url 'crear_categoria' %}">+ Nueva categoría</a>
+        </p>
+    </div>
 </body>
 </html>

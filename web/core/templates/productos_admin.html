@@ -1,54 +1,72 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Administrar Productos</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 0 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
-        a.boton { background: #2a5db0; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; }
-        a.eliminar { background: #b02a2a; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; margin-left: 6px; }
-        a.nueva { display: inline-block; margin-top: 16px; background: #2a7a2a; color: white; padding: 8px 14px; border-radius: 4px; text-decoration: none; }
-        .stock-bajo { color: #b02a2a; font-weight: bold; }
-        nav a { margin-right: 16px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Administrar Productos — Tienda en Línea</title>
+    <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'catalogo' %}">Catálogo</a>
-        <a href="{% url 'ver_carrito' %}">Carrito</a>
-        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
-        <a href="{% url 'listar_categorias' %}">Categorías</a>
-        <a href="{% url 'listar_productos_admin' %}">Administrar Productos</a>
+    <nav class="tienda-nav">
+        <div class="contenedor">
+            <span class="marca">Tienda en Línea</span>
+            <a href="{% url 'catalogo' %}">Catálogo</a>
+            <a href="{% url 'ver_carrito' %}">Carrito</a>
+            <a href="{% url 'historial_pedidos' %}">Pedidos</a>
+            <a href="{% url 'listar_categorias' %}">Categorías</a>
+            <a href="{% url 'listar_productos_admin' %}">Productos</a>
+            <a href="{% url 'productos_stock_bajo' %}">Stock bajo</a>
+            <a href="{% url 'ventas_por_categoria' %}">Ventas</a>
+        </div>
     </nav>
 
-    <h1>Administrar Productos</h1>
+    <div class="contenedor">
+        <div class="encabezado-pagina">
+            <h1>Administrar Productos</h1>
+            <p>Crea, edita y controla el inventario de la tienda.</p>
+        </div>
 
-    <table>
-        <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Categoría</th>
-            <th></th>
-        </tr>
-        {% for prod in productos %}
+        {% if productos %}
+        <table class="libro">
             <tr>
-                <td>{{ prod.nombre }}</td>
-                <td>{{ prod.descripcion }}</td>
-                <td>${{ prod.precio }}</td>
-                <td class="{% if prod.stock < 5 %}stock-bajo{% endif %}">{{ prod.stock }}</td>
-                <td>{{ prod.categoria_nombre }}</td>
-                <td>
-                    <a class="boton" href="{% url 'editar_producto' prod.id %}">Editar</a>
-                    <a class="eliminar" href="{% url 'eliminar_producto' prod.id %}" onclick="return confirm('¿Seguro que quieres eliminar este producto?');">Eliminar</a>
-                </td>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Categoría</th>
+                <th></th>
             </tr>
-        {% endfor %}
-    </table>
+            {% for prod in productos %}
+                <tr>
+                    <td>{{ prod.nombre }}</td>
+                    <td>{{ prod.descripcion }}</td>
+                    <td class="monto">${{ prod.precio }}</td>
+                    <td>
+                        {% if prod.stock < 5 %}
+                            <span class="insignia cancelado">{{ prod.stock }}</span>
+                        {% else %}
+                            {{ prod.stock }}
+                        {% endif %}
+                    </td>
+                    <td>{{ prod.categoria_nombre }}</td>
+                    <td class="acciones-fila">
+                        <a class="btn btn-fantasma btn-sm" href="{% url 'editar_producto' prod.id %}">Editar</a>
+                        <a class="btn btn-peligro btn-sm" href="{% url 'eliminar_producto' prod.id %}" onclick="return confirm('¿Seguro que quieres eliminar este producto?');">Eliminar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <div class="estado-vacio">
+                <div class="icono">📦</div>
+                <p>Todavía no hay productos registrados.</p>
+            </div>
+        {% endif %}
 
-    <a class="nueva" href="{% url 'crear_producto' %}">+ Nuevo producto</a>
+        <p style="margin-top: 20px;">
+            <a class="btn btn-acento" href="{% url 'crear_producto' %}">+ Nuevo producto</a>
+        </p>
+    </div>
 </body>
 </html>

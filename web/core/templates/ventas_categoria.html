@@ -1,45 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Ventas por Categoría</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
-        .total { color: #2a7a2a; font-weight: bold; }
-        nav a { margin-right: 16px; }
-        .vacio { margin-top: 20px; color: #555; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ventas por Categoría — Tienda en Línea</title>
+    <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'catalogo' %}">Catálogo</a>
-        <a href="{% url 'ver_carrito' %}">Carrito</a>
-        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
-        <a href="{% url 'listar_categorias' %}">Categorías</a>
-        <a href="{% url 'listar_productos_admin' %}">Administrar Productos</a>
-        <a href="{% url 'productos_stock_bajo' %}">Stock Bajo</a>
-        <a href="{% url 'ventas_por_categoria' %}">Ventas por Categoría</a>
+    <nav class="tienda-nav">
+        <div class="contenedor">
+            <span class="marca">Tienda en Línea</span>
+            <a href="{% url 'catalogo' %}">Catálogo</a>
+            <a href="{% url 'ver_carrito' %}">Carrito</a>
+            <a href="{% url 'historial_pedidos' %}">Pedidos</a>
+            <a href="{% url 'listar_categorias' %}">Categorías</a>
+            <a href="{% url 'listar_productos_admin' %}">Productos</a>
+            <a href="{% url 'productos_stock_bajo' %}">Stock bajo</a>
+            <a href="{% url 'ventas_por_categoria' %}">Ventas</a>
+        </div>
     </nav>
 
-    <h1>📊 Total de Ventas por Categoría</h1>
+    <div class="contenedor">
+        <div class="encabezado-pagina">
+            <h1>📊 Total de Ventas por Categoría</h1>
+            <p>Resumen de ingresos agrupados por categoría.</p>
+        </div>
 
-    {% if ventas %}
-    <table>
-        <tr>
-            <th>Categoría</th>
-            <th>Total Vendido</th>
-        </tr>
-        {% for venta in ventas %}
+        {% if ventas %}
+        <table class="libro">
             <tr>
-                <td>{{ venta.categoria }}</td>
-                <td class="total">${{ venta.total_vendido }}</td>
+                <th>Categoría</th>
+                <th>Total Vendido</th>
             </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-        <p class="vacio">Todavía no hay ventas registradas.</p>
-    {% endif %}
+            {% for venta in ventas %}
+                <tr>
+                    <td>{{ venta.categoria }}</td>
+                    <td class="monto">${{ venta.total_vendido }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <div class="estado-vacio">
+                <div class="icono">📉</div>
+                <p>Todavía no hay ventas registradas.</p>
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>

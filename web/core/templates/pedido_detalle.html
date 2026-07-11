@@ -1,55 +1,52 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Detalle del Pedido #{{ pedido.id }}</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
-        .estado { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 13px; font-weight: bold; }
-        .pendiente { background: #fff3cd; color: #856404; }
-        .completado { background: #d4edda; color: #155724; }
-        .cancelado { background: #f8d7da; color: #721c24; }
-        .total { font-size: 18px; font-weight: bold; margin-top: 16px; text-align: right; }
-        nav a { margin-right: 16px; }
-        a.volver { display: inline-block; margin-top: 16px; color: #2a5db0; text-decoration: none; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pedido #{{ pedido.id }} — Tienda en Línea</title>
+    <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'catalogo' %}">Catálogo</a>
-        <a href="{% url 'ver_carrito' %}">Carrito</a>
-        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
-        <a href="{% url 'listar_categorias' %}">Categorías</a>
-        <a href="{% url 'listar_productos_admin' %}">Administrar Productos</a>
+    <nav class="tienda-nav">
+        <div class="contenedor">
+            <span class="marca">Tienda en Línea</span>
+            <a href="{% url 'catalogo' %}">Catálogo</a>
+            <a href="{% url 'ver_carrito' %}">Carrito</a>
+            <a href="{% url 'historial_pedidos' %}">Pedidos</a>
+            <a href="{% url 'listar_categorias' %}">Categorías</a>
+            <a href="{% url 'listar_productos_admin' %}">Productos</a>
+        </div>
     </nav>
 
-    <h1>Pedido #{{ pedido.id }}</h1>
-    <p>Fecha: {{ pedido.fecha }}</p>
-    <p>Estado:
-        <span class="estado {{ pedido.estado }}">{{ pedido.estado|title }}</span>
-    </p>
+    <div class="contenedor">
+        <div class="encabezado-pagina">
+            <h1>Pedido #{{ pedido.id }}</h1>
+            <p>Fecha: {{ pedido.fecha }} &nbsp;·&nbsp; Estado:
+                <span class="insignia {{ pedido.estado }}">{{ pedido.estado|title }}</span>
+            </p>
+        </div>
 
-    <table>
-        <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio unitario</th>
-            <th>Subtotal</th>
-        </tr>
-        {% for item in pedido.items %}
+        <table class="libro">
             <tr>
-                <td>{{ item.producto_nombre }}</td>
-                <td>{{ item.cantidad }}</td>
-                <td>${{ item.precio_unitario }}</td>
-                <td>${{ item.subtotal }}</td>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio unitario</th>
+                <th>Subtotal</th>
             </tr>
-        {% endfor %}
-    </table>
+            {% for item in pedido.items %}
+                <tr>
+                    <td>{{ item.producto_nombre }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td class="monto">${{ item.precio_unitario }}</td>
+                    <td class="monto">${{ item.subtotal }}</td>
+                </tr>
+            {% endfor %}
+        </table>
 
-    <p class="total">Total: ${{ pedido.total }}</p>
+        <p class="total-final">Total: ${{ pedido.total }}</p>
 
-    <a class="volver" href="{% url 'historial_pedidos' %}">&larr; Volver al historial</a>
+        <a class="btn btn-fantasma" href="{% url 'historial_pedidos' %}">&larr; Volver al historial</a>
+    </div>
 </body>
 </html>

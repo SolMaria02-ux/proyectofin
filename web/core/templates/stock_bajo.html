@@ -1,56 +1,59 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Alerta de Stock Bajo</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
-        .stock-bajo { color: #b02a2a; font-weight: bold; }
-        form.filtro { margin-top: 16px; }
-        input[type="number"] { padding: 6px; width: 80px; }
-        button { background: #2a5db0; color: white; border: none; padding: 8px 14px; border-radius: 4px; cursor: pointer; }
-        nav a { margin-right: 16px; }
-        .vacio { margin-top: 20px; color: #555; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Alerta de Stock Bajo — Tienda en Línea</title>
+    <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'catalogo' %}">Catálogo</a>
-        <a href="{% url 'ver_carrito' %}">Carrito</a>
-        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
-        <a href="{% url 'listar_categorias' %}">Categorías</a>
-        <a href="{% url 'listar_productos_admin' %}">Administrar Productos</a>
-        <a href="{% url 'productos_stock_bajo' %}">Stock Bajo</a>
-        <a href="{% url 'ventas_por_categoria' %}">Ventas por Categoría</a>
+    <nav class="tienda-nav">
+        <div class="contenedor">
+            <span class="marca">Tienda en Línea</span>
+            <a href="{% url 'catalogo' %}">Catálogo</a>
+            <a href="{% url 'ver_carrito' %}">Carrito</a>
+            <a href="{% url 'historial_pedidos' %}">Pedidos</a>
+            <a href="{% url 'listar_categorias' %}">Categorías</a>
+            <a href="{% url 'listar_productos_admin' %}">Productos</a>
+            <a href="{% url 'productos_stock_bajo' %}">Stock bajo</a>
+            <a href="{% url 'ventas_por_categoria' %}">Ventas</a>
+        </div>
     </nav>
 
-    <h1>⚠️ Alerta de Inventario Bajo</h1>
+    <div class="contenedor">
+        <div class="encabezado-pagina">
+            <h1>⚠️ Alerta de Inventario Bajo</h1>
+            <p>Productos que necesitan reabastecimiento pronto.</p>
+        </div>
 
-    <form class="filtro" method="get">
-        <label for="limite">Mostrar productos con stock menor a:</label>
-        <input type="number" id="limite" name="limite" value="{{ limite }}" min="1">
-        <button type="submit">Filtrar</button>
-    </form>
+        <form class="filtro-barra" method="get">
+            <label for="limite">Stock menor a:</label>
+            <input type="number" id="limite" name="limite" value="{{ limite }}" min="1" style="width: 90px;">
+            <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+        </form>
 
-    {% if productos %}
-    <table>
-        <tr>
-            <th>Nombre</th>
-            <th>Stock</th>
-            <th>Precio</th>
-        </tr>
-        {% for prod in productos %}
+        {% if productos %}
+        <table class="libro">
             <tr>
-                <td>{{ prod.nombre }}</td>
-                <td class="stock-bajo">{{ prod.stock }}</td>
-                <td>${{ prod.precio }}</td>
+                <th>Nombre</th>
+                <th>Stock</th>
+                <th>Precio</th>
             </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-        <p class="vacio">No hay productos con stock menor a {{ limite }}. 🎉</p>
-    {% endif %}
+            {% for prod in productos %}
+                <tr>
+                    <td>{{ prod.nombre }}</td>
+                    <td><span class="insignia cancelado">{{ prod.stock }}</span></td>
+                    <td class="monto">${{ prod.precio }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <div class="estado-vacio">
+                <div class="icono">🎉</div>
+                <p>No hay productos con stock menor a {{ limite }}.</p>
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>

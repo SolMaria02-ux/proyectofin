@@ -1,58 +1,62 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Catálogo de Productos</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 0 20px; }
-        h1 { color: #222; }
-        .filtros { margin-bottom: 20px; }
-        select { padding: 6px; font-size: 14px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-        .card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; }
-        .card h3 { margin: 0 0 8px; }
-        .precio { font-weight: bold; color: #2a7a2a; }
-        .stock { color: #666; font-size: 13px; }
-        button { background: #2a5db0; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-top: 8px; }
-        nav a { margin-right: 16px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Catálogo — Tienda en Línea</title>
+    <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'catalogo' %}">Catálogo</a>
-        <a href="{% url 'ver_carrito' %}">Carrito</a>
-        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
+    <nav class="tienda-nav">
+        <div class="contenedor">
+            <span class="marca">Tienda en Línea</span>
+            <a href="{% url 'catalogo' %}">Catálogo</a>
+            <a href="{% url 'ver_carrito' %}">Carrito</a>
+            <a href="{% url 'historial_pedidos' %}">Pedidos</a>
+            <a href="{% url 'listar_categorias' %}">Categorías</a>
+            <a href="{% url 'listar_productos_admin' %}">Productos</a>
+            <a href="{% url 'productos_stock_bajo' %}">Stock bajo</a>
+            <a href="{% url 'ventas_por_categoria' %}">Ventas</a>
+        </div>
     </nav>
 
-    <h1>Catálogo de Productos</h1>
+    <div class="contenedor">
+        <div class="encabezado-pagina">
+            <h1>Catálogo de Productos</h1>
+            <p>Todo lo que necesitas, en un solo lugar.</p>
+        </div>
 
-    <form method="get" class="filtros">
-        <label for="categoria">Filtrar por categoría:</label>
-        <select name="categoria" id="categoria" onchange="this.form.submit()">
-            <option value="">Todas</option>
-            {% for cat in categorias %}
-                <option value="{{ cat.id }}" {% if categoria_seleccionada == cat.id|stringformat:"s" %}selected{% endif %}>
-                    {{ cat.nombre }}
-                </option>
+        <form class="filtro-barra" method="get">
+            <label for="categoria">Filtrar por categoría:</label>
+            <select id="categoria" name="categoria" onchange="this.form.submit()">
+                <option value="">Todas</option>
+                {% for cat in categorias %}
+                    <option value="{{ cat.id }}" {% if categoria_seleccionada == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.nombre }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        {% if productos %}
+        <div class="rejilla-productos">
+            {% for producto in productos %}
+                <div class="tarjeta-producto">
+                    <h3>{{ producto.nombre }}</h3>
+                    <p class="desc">{{ producto.descripcion }}</p>
+                    <div class="precio-etiqueta">${{ producto.precio }}</div>
+                    <p class="stock-info {% if producto.stock < 5 %}bajo{% endif %}">
+                        Stock disponible: {{ producto.stock }}
+                    </p>
+                    <a class="btn btn-primary" href="{% url 'agregar_al_carrito' producto.id %}">Agregar al carrito</a>
+                </div>
             {% endfor %}
-        </select>
-    </form>
-
-    <div class="grid">
-        {% for producto in productos %}
-            <div class="card">
-                <h3>{{ producto.nombre }}</h3>
-                <p>{{ producto.descripcion }}</p>
-                <p class="precio">${{ producto.precio }}</p>
-                <p class="stock">Stock disponible: {{ producto.stock }}</p>
-                <form method="post" action="{% url 'agregar_al_carrito' producto.id %}">
-                    {% csrf_token %}
-                    <button type="submit">Agregar al carrito</button>
-                </form>
+        </div>
+        {% else %}
+            <div class="estado-vacio">
+                <div class="icono">📦</div>
+                <p>No hay productos disponibles en esta categoría.</p>
             </div>
-        {% empty %}
-            <p>No hay productos disponibles en esta categoría.</p>
-        {% endfor %}
+        {% endif %}
     </div>
 </body>
 </html>

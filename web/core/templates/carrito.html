@@ -1,60 +1,69 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Tu Carrito</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
-        .total { font-size: 20px; font-weight: bold; margin-top: 16px; text-align: right; }
-        button { background: #2a7a2a; color: white; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; }
-        .quitar { color: #b02a2a; text-decoration: none; font-size: 13px; }
-        .error { background: #ffe0e0; color: #a02020; padding: 10px; border-radius: 6px; margin-bottom: 12px; }
-        nav a { margin-right: 16px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carrito — Tienda en Línea</title>
+    <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'catalogo' %}">Catálogo</a>
-        <a href="{% url 'ver_carrito' %}">Carrito</a>
-        <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
+    <nav class="tienda-nav">
+        <div class="contenedor">
+            <span class="marca">Tienda en Línea</span>
+            <a href="{% url 'catalogo' %}">Catálogo</a>
+            <a href="{% url 'ver_carrito' %}">Carrito</a>
+            <a href="{% url 'historial_pedidos' %}">Pedidos</a>
+            <a href="{% url 'listar_categorias' %}">Categorías</a>
+            <a href="{% url 'listar_productos_admin' %}">Productos</a>
+            <a href="{% url 'productos_stock_bajo' %}">Stock bajo</a>
+            <a href="{% url 'ventas_por_categoria' %}">Ventas</a>
+        </div>
     </nav>
 
-    <h1>Tu Carrito</h1>
+    <div class="contenedor">
+        <div class="encabezado-pagina">
+            <h1>Tu Carrito</h1>
+            <p>Revisa tu pedido antes de confirmarlo.</p>
+        </div>
 
-    {% if error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
+        {% if error %}
+            <p style="color: var(--danger); font-weight: 600;">{{ error }}</p>
+        {% endif %}
 
-    {% if items %}
-        <table>
+        {% if items %}
+        <table class="libro">
             <tr>
                 <th>Producto</th>
                 <th>Cantidad</th>
-                <th>Precio unitario</th>
                 <th>Subtotal</th>
                 <th></th>
             </tr>
-            {% for item in items %}
+            {% for entrada in items %}
                 <tr>
-                    <td>{{ item.producto.nombre }}</td>
-                    <td>{{ item.cantidad }}</td>
-                    <td>${{ item.producto.precio }}</td>
-                    <td>${{ item.subtotal }}</td>
-                    <td><a class="quitar" href="{% url 'quitar_del_carrito' item.producto.id %}">Quitar</a></td>
+                    <td>{{ entrada.producto.nombre }}</td>
+                    <td>{{ entrada.cantidad }}</td>
+                    <td class="monto">${{ entrada.subtotal }}</td>
+                    <td>
+                        <a class="btn btn-peligro btn-sm" href="{% url 'quitar_del_carrito' entrada.producto.id %}">Quitar</a>
+                    </td>
                 </tr>
             {% endfor %}
         </table>
 
-        <p class="total">Total: ${{ total }}</p>
+        <p class="total-final">Total: ${{ total }}</p>
 
         <form method="post" action="{% url 'confirmar_pedido' %}">
             {% csrf_token %}
-            <button type="submit">Confirmar pedido</button>
+            <button type="submit" class="btn btn-acento">Confirmar pedido</button>
         </form>
-    {% else %}
-        <p>Tu carrito está vacío. <a href="{% url 'catalogo' %}">Ir al catálogo</a></p>
-    {% endif %}
+        {% else %}
+            <div class="estado-vacio">
+                <div class="icono">🛒</div>
+                <p>Tu carrito está vacío.</p>
+                <a class="btn btn-primary" href="{% url 'catalogo' %}">Ir al catálogo</a>
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>

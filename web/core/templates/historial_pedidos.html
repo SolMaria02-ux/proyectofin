@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <title>Historial de Pedidos</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 700px; margin: 30px auto; padding: 0 20px; }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 30px auto; padding: 0 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 16px; }
         th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
-        .estado { padding: 4px 10px; border-radius: 12px; font-size: 13px; }
+        .estado { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 13px; font-weight: bold; }
         .pendiente { background: #fff3cd; color: #856404; }
         .completado { background: #d4edda; color: #155724; }
         .cancelado { background: #f8d7da; color: #721c24; }
+        a.ver { background: #2a5db0; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; }
+        select.cambiar-estado { padding: 4px; font-size: 13px; margin-left: 6px; }
+        button.guardar-estado { padding: 4px 8px; font-size: 13px; margin-left: 4px; cursor: pointer; }
         nav a { margin-right: 16px; }
     </style>
 </head>
@@ -19,29 +22,43 @@
         <a href="{% url 'catalogo' %}">Catálogo</a>
         <a href="{% url 'ver_carrito' %}">Carrito</a>
         <a href="{% url 'historial_pedidos' %}">Historial de pedidos</a>
+        <a href="{% url 'listar_categorias' %}">Categorías</a>
+        <a href="{% url 'listar_productos_admin' %}">Administrar Productos</a>
     </nav>
 
     <h1>Historial de Pedidos</h1>
 
-    {% if pedidos %}
-        <table>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th></th>
+        </tr>
+        {% for pedido in pedidos %}
             <tr>
-                <th>#</th>
-                <th>Fecha</th>
-                <th>Total</th>
-                <th>Estado</th>
+                <td>#{{ pedido.id }}</td>
+                <td>{{ pedido.fecha }}</td>
+                <td>${{ pedido.total }}</td>
+                <td>
+                    <span class="estado {{ pedido.estado }}">{{ pedido.estado|title }}</span>
+                </td>
+                <td>
+                    <a class="ver" href="{% url 'detalle_pedido' pedido.id %}">Ver detalle</a>
+
+                    <form method="post" action="{% url 'cambiar_estado_pedido' pedido.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <select name="estado" class="cambiar-estado">
+                            <option value="pendiente" {% if pedido.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                            <option value="completado" {% if pedido.estado == 'completado' %}selected{% endif %}>Completado</option>
+                            <option value="cancelado" {% if pedido.estado == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                        </select>
+                        <button type="submit" class="guardar-estado">Actualizar</button>
+                    </form>
+                </td>
             </tr>
-            {% for pedido in pedidos %}
-                <tr>
-                    <td>{{ pedido.id }}</td>
-                    <td>{{ pedido.fecha }}</td>
-                    <td>${{ pedido.total }}</td>
-                    <td><span class="estado {{ pedido.estado }}">{{ pedido.estado }}</span></td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>Todavía no hay pedidos registrados.</p>
-    {% endif %}
+        {% endfor %}
+    </table>
 </body>
 </html>
